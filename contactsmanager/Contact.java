@@ -1,31 +1,25 @@
+package contactsmanager;
+
 public class Contact {
-    private String name;
-    private String phoneNumber;
+    private static String name;
+    private static String phoneNumber;
 
     public Contact (String name, String phoneNumber) {
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
 
-    public String getName() {
+    public static String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
+    public static String getPhoneNumber() {
         return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     @Override
     public String toString() {
-        return "Contact{" +
+        return "ContactManager.Contact{" +
                 "name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
