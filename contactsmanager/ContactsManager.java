@@ -105,16 +105,6 @@ public class ContactsManager {
         } while (choice != 5);
     }
 
-    private void viewContacts() {
-        List<Contact> contacts = loadContacts();
-        for (Contact contact : contacts){
-            System.out.println(contact.getName() + " | " + contact.getPhoneNumber());
-//        System.out.println("------------------");
-        }
-//        System.out.println(Contact.getName() + " | " + Contact.getPhoneNumber());
-        System.out.println("------------------");
-    }
-
     private void newViewContacts(){
         List<Contact> contacts = loadContacts();
         System.out.printf("-------------------------------------%n");
@@ -130,7 +120,6 @@ public class ContactsManager {
         List<Contact> contacts = loadContacts();
         String name;
         name = getAName();
-
 
         System.out.print("Enter the phone number: ");
         String phoneNumber = scanner.nextLine();
