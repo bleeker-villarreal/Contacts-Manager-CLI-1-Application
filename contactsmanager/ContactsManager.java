@@ -1,17 +1,27 @@
 package contactsmanager;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Iterator;
 
 public class ContactsManager {
+
+    private Scanner scanner;
+
+    private Path pathToContacts = Paths.get("contacts.txt");
+
+    private static List<Contact> contacts;
     public static void main(String[] args) {
         ContactsManager contactsManager = new ContactsManager();
         contactsManager.run();
     }
-    private List<Contact> contacts;
-    private Scanner scanner;
+//    private List<Contact> contacts;
+//    private Scanner scanner;
 
     public ContactsManager() {
         contacts = new ArrayList<>();
@@ -20,10 +30,11 @@ public class ContactsManager {
     }
 
     private void loadContacts() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("contacts.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
+        try  {
+            List<String> contactsFromFile = Files.readAllLines(pathToContacts);
+            Iterator<String> contactsIterator = contactsFromFile.iterator();
+            while (contactsIterator.hasNext()) {
+                String[] parts = contactsIterator.next().split("\\|");
                 if (parts.length == 2) {
                     String name = parts[0].trim();
                     String phoneNumber = parts[1].trim();
@@ -32,6 +43,7 @@ public class ContactsManager {
                 }
             }
             System.out.println("Contacts loaded successfully!");
+
         } catch (IOException e) {
             System.out.println("Error loading contacts: " + e.getMessage());
         }
@@ -39,7 +51,7 @@ public class ContactsManager {
 
 
     private void saveContacts() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("contacts.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/ksbleek/Desktop/Contacts-Manager-CLI-1-Application/contactsmanager/contacts.txt"))) {
             for (Contact contact : contacts) {
                 writer.write(contact.toString());
                 writer.newLine();
@@ -90,7 +102,11 @@ public class ContactsManager {
     }
 
     private void viewContacts() {
-        System.out.println(Contact.getName() + " | " + Contact.getPhoneNumber());
+        for (Contact contact : contacts){
+            System.out.println(Contact.getName() + " | " + Contact.getPhoneNumber());
+//        System.out.println("------------------");
+        }
+//        System.out.println(Contact.getName() + " | " + Contact.getPhoneNumber());
         System.out.println("------------------");
     }
 
