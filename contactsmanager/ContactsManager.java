@@ -41,9 +41,7 @@ public class ContactsManager {
                     Contact contact = new Contact(name, phoneNumber);
                     contacts.add(contact);
                 }
-            }
-
-            System.out.println("Contacts loaded successfully!");
+            };
 
         } catch (IOException e) {
             System.out.println("Error loading contacts: " + e.getMessage());
@@ -86,7 +84,8 @@ public class ContactsManager {
 
             switch (choice) {
                 case 1:
-                    viewContacts();
+//                    viewContacts();
+                    newViewContacts();
                     break;
                 case 2:
                     addContact();
@@ -116,10 +115,22 @@ public class ContactsManager {
         System.out.println("------------------");
     }
 
+    private void newViewContacts(){
+        List<Contact> contacts = loadContacts();
+        System.out.printf("-------------------------------------%n");
+        System.out.printf("| %-15s | %-15s |%n", "Name", "Phone number");
+        System.out.printf("-------------------------------------%n");
+        for (Contact contact : contacts){
+            System.out.printf("| %-15s | %-15s |%n", contact.getName(), contact.getPhoneNumber());
+        }
+        System.out.printf("-------------------------------------%n");
+    }
+
     private void addContact() {
         List<Contact> contacts = loadContacts();
-        System.out.print("Enter the name: ");
-        String name = scanner.nextLine();
+        String name;
+        name = getAName();
+
 
         System.out.print("Enter the phone number: ");
         String phoneNumber = scanner.nextLine();
@@ -129,7 +140,6 @@ public class ContactsManager {
         saveContacts(contacts);
 
 
-        System.out.println("Contact added successfully!");
     }
 
     private void searchContact() {
@@ -162,7 +172,29 @@ public class ContactsManager {
 
         System.out.println("Contact not found.");
     }
+//    Check and get name from input
+    private String getAName(){
+        System.out.print("Enter the name: ");
+        String name = scanner.nextLine();
+        while (checkName(name)){
+            System.out.print("That name already exist please enter a different name:");
+            name = scanner.nextLine();
+        }
+        System.out.println("Name excepted!");
+        return name;
+    }
+    private boolean checkName(String name){
+        boolean result = false;
+        List<Contact> contacts = loadContacts();
+        for (Contact contact : contacts){
+            if(contact.getName().equalsIgnoreCase(name)){
+                result = true;
+            }
+        }
+        return result;
+    }
 }
+
 
 
 
