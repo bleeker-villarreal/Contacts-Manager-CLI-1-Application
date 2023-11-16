@@ -17,6 +17,7 @@ public class Contact {
         return phoneNumber;
     }
 
+
     @Override
     public String toString() {
         return "ContactManager.Contact{" +
