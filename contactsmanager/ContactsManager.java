@@ -1,13 +1,9 @@
 package contactsmanager;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Iterator;
+import java.lang.reflect.Array;
+import java.nio.file.*;
+import java.util.*;
 
 public class ContactsManager {
 
@@ -15,7 +11,8 @@ public class ContactsManager {
 
     private Path pathToContacts = Paths.get("contacts.txt");
 
-    private static List<Contact> contacts;
+
+//    private static List<Contact> contacts;
     public static void main(String[] args) {
         ContactsManager contactsManager = new ContactsManager();
         contactsManager.run();
@@ -24,14 +21,17 @@ public class ContactsManager {
 //    private Scanner scanner;
 
     public ContactsManager() {
-        contacts = new ArrayList<>();
+//        contacts = new ArrayList<>();
         scanner = new Scanner(System.in);
         loadContacts();
     }
 
-    private void loadContacts() {
+    private List<Contact> loadContacts() {
+        List<Contact> contacts = new ArrayList<>();
         try  {
+
             List<String> contactsFromFile = Files.readAllLines(pathToContacts);
+
             Iterator<String> contactsIterator = contactsFromFile.iterator();
             while (contactsIterator.hasNext()) {
                 String[] parts = contactsIterator.next().split("\\|");
@@ -42,20 +42,26 @@ public class ContactsManager {
                     contacts.add(contact);
                 }
             }
+
             System.out.println("Contacts loaded successfully!");
 
         } catch (IOException e) {
             System.out.println("Error loading contacts: " + e.getMessage());
         }
+
+        return contacts;
     }
 
 
-    private void saveContacts() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/ksbleek/Desktop/Contacts-Manager-CLI-1-Application/contactsmanager/contacts.txt"))) {
-            for (Contact contact : contacts) {
-                writer.write(contact.toString());
-                writer.newLine();
-            }
+    private void saveContacts(List<Contact> contacts) {
+        List<String> moreContacts = new ArrayList<>();
+        for (Contact contact : contacts){
+            String contactString = contact.toString();
+            moreContacts.add(contactString);
+        }
+
+        try  {
+            Files.write(pathToContacts, moreContacts);
             System.out.println("Contacts saved successfully!");
         } catch (IOException e) {
             System.out.println("Error saving contacts: " + e.getMessage());
@@ -92,7 +98,6 @@ public class ContactsManager {
                     deleteContact();
                     break;
                 case 5:
-                    saveContacts();
                     System.out.println("Exiting the application. Goodbye!");
                     break;
                 default:
@@ -102,8 +107,9 @@ public class ContactsManager {
     }
 
     private void viewContacts() {
+        List<Contact> contacts = loadContacts();
         for (Contact contact : contacts){
-            System.out.println(Contact.getName() + " | " + Contact.getPhoneNumber());
+            System.out.println(contact.getName() + " | " + contact.getPhoneNumber());
 //        System.out.println("------------------");
         }
 //        System.out.println(Contact.getName() + " | " + Contact.getPhoneNumber());
@@ -111,6 +117,7 @@ public class ContactsManager {
     }
 
     private void addContact() {
+        List<Contact> contacts = loadContacts();
         System.out.print("Enter the name: ");
         String name = scanner.nextLine();
 
@@ -119,6 +126,8 @@ public class ContactsManager {
 
         Contact newContact = new Contact(name, phoneNumber);
         contacts.add(newContact);
+        saveContacts(contacts);
+
 
         System.out.println("Contact added successfully!");
     }
@@ -126,7 +135,7 @@ public class ContactsManager {
     private void searchContact() {
         System.out.print("Enter the name to search: ");
         String searchName = scanner.nextLine();
-
+        List<Contact> contacts = loadContacts();
         for (Contact contact : contacts) {
             if (contact.toString().toLowerCase().contains(searchName.toLowerCase())) {
                 System.out.println("Contact found: " + contact.toString());
@@ -138,6 +147,7 @@ public class ContactsManager {
     }
 
     private void deleteContact() {
+        List<Contact> contacts = loadContacts();
         System.out.print("Enter the name to delete: ");
         String deleteName = scanner.nextLine();
 
@@ -145,6 +155,7 @@ public class ContactsManager {
             if (contact.toString().toLowerCase().contains(deleteName.toLowerCase())) {
                 contacts.remove(contact);
                 System.out.println("Contact deleted successfully!");
+                saveContacts(contacts);
                 return;
             }
         }
