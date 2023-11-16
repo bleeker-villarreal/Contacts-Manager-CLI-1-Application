@@ -1,17 +1,25 @@
 package contactsmanager;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ContactsManager {
+
+    private Scanner scanner;
+
+    private Path pathToContacts = Paths.get("contacts.txt");
+
+    private List<Contact> contacts;
     public static void main(String[] args) {
         ContactsManager contactsManager = new ContactsManager();
         contactsManager.run();
     }
-    private List<Contact> contacts;
-    private Scanner scanner;
+//    private List<Contact> contacts;
+//    private Scanner scanner;
 
     public ContactsManager() {
         contacts = new ArrayList<>();
@@ -20,7 +28,7 @@ public class ContactsManager {
     }
 
     private void loadContacts() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("contacts.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("/Users/ksbleek/Desktop/Contacts-Manager-CLI-1-Application/contactsmanager/contacts.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
@@ -39,7 +47,7 @@ public class ContactsManager {
 
 
     private void saveContacts() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("contacts.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/ksbleek/Desktop/Contacts-Manager-CLI-1-Application/contactsmanager/contacts.txt"))) {
             for (Contact contact : contacts) {
                 writer.write(contact.toString());
                 writer.newLine();
