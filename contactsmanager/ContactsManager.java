@@ -189,7 +189,7 @@ public class ContactsManager {
             } else if (input.length() == 13){
                 number = input.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");   //000-123-456-7890
             } else {
-                System.out.println("Please Enter a valid 7 or 10 digit numeric phone number:");
+                System.out.println("Please Enter a valid 7, 10 or 13 digit numeric phone number:");
                 input = scanner.nextLine();
             }
         }
