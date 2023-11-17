@@ -12,18 +12,52 @@ public class ContactsManager {
     private Path pathToContacts = Paths.get("contacts.txt");
 
 
-//    private static List<Contact> contacts;
     public static void main(String[] args) {
         ContactsManager contactsManager = new ContactsManager();
         contactsManager.run();
     }
-//    private List<Contact> contacts;
-//    private Scanner scanner;
 
     public ContactsManager() {
-//        contacts = new ArrayList<>();
         scanner = new Scanner(System.in);
         loadContacts();
+    }
+
+    public void run() {
+        int choice;
+        do {
+            showMainMenu();
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    ViewContacts();
+                    break;
+                case 2:
+                    addContact();
+                    break;
+                case 3:
+                    searchContact();
+                    break;
+                case 4:
+                    deleteContact();
+                    break;
+                case 5:
+                    System.out.println("Exiting the application. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+            }
+        } while (choice != 5);
+    }
+
+    private void showMainMenu() {
+        System.out.println("1. View contacts.");
+        System.out.println("2. Add a new contact.");
+        System.out.println("3. Search a contact by name.");
+        System.out.println("4. Delete an existing contact.");
+        System.out.println("5. Exit.");
+        System.out.print("Enter an option (1, 2, 3, 4, or 5): ");
     }
 
     private List<Contact> loadContacts() {
@@ -66,54 +100,15 @@ public class ContactsManager {
         }
     }
 
-    private void showMainMenu() {
-        System.out.println("1. View contacts.");
-        System.out.println("2. Add a new contact.");
-        System.out.println("3. Search a contact by name.");
-        System.out.println("4. Delete an existing contact.");
-        System.out.println("5. Exit.");
-        System.out.print("Enter an option (1, 2, 3, 4, or 5): ");
-    }
-
-    public void run() {
-        int choice;
-        do {
-            showMainMenu();
-            choice = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (choice) {
-                case 1:
-//                    viewContacts();
-                    newViewContacts();
-                    break;
-                case 2:
-                    addContact();
-                    break;
-                case 3:
-                    searchContact();
-                    break;
-                case 4:
-                    deleteContact();
-                    break;
-                case 5:
-                    System.out.println("Exiting the application. Goodbye!");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
-            }
-        } while (choice != 5);
-    }
-
-    private void newViewContacts(){
+    private void ViewContacts(){
         List<Contact> contacts = loadContacts();
-        System.out.printf("-------------------------------------%n");
-        System.out.printf("| %-15s | %-15s |%n", "Name", "Phone number");
-        System.out.printf("-------------------------------------%n");
+        System.out.printf("-----------------------------------------%n");
+        System.out.printf("| %-17s | %-17s |%n", "Name", "Phone number");
+        System.out.printf("-----------------------------------------%n");
         for (Contact contact : contacts){
-            System.out.printf("| %-15s | %-15s |%n", contact.getName(), contact.getPhoneNumber());
+            System.out.printf("| %-17s | %-17s |%n", contact.getName(), contact.getPhoneNumber());
         }
-        System.out.printf("-------------------------------------%n");
+        System.out.printf("-----------------------------------------%n");
     }
 
     private void addContact() {
@@ -121,8 +116,7 @@ public class ContactsManager {
         String name;
         name = getAName();
 
-        System.out.print("Enter the phone number: ");
-        String phoneNumber = scanner.nextLine();
+        String phoneNumber = formatNumber();
 
         Contact newContact = new Contact(name, phoneNumber);
         contacts.add(newContact);
@@ -137,7 +131,7 @@ public class ContactsManager {
         List<Contact> contacts = loadContacts();
         for (Contact contact : contacts) {
             if (contact.toString().toLowerCase().contains(searchName.toLowerCase())) {
-                System.out.println("Contact found: " + contact.toString());
+                System.out.println("Contact found: " + contact);
                 return;
             }
         }
@@ -182,6 +176,27 @@ public class ContactsManager {
         }
         return result;
     }
+
+    private String formatNumber(){
+        System.out.print("Enter the phone number: ");
+        String input = scanner.nextLine();
+        String number = null;
+        while (number == null) {
+            if (input.length() == 10) {
+                number = input.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "($1) $2-$3");   //(123) 456-7890
+            } else if (input.length() == 7) {
+                number = input.replaceFirst("(\\d{3})(\\d+)", "$1-$2");   //456-7890
+            } else if (input.length() == 13){
+                number = input.replaceFirst("(\\d{3})(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");   //000-123-456-7890
+            } else {
+                System.out.println("Please Enter a valid 7 or 10 digit numeric phone number:");
+                input = scanner.nextLine();
+            }
+        }
+        return number;
+    }
+
+
 }
 
 
